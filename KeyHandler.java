@@ -33,10 +33,6 @@ public class KeyHandler implements NativeKeyListener
 
 	@Override
 	public void nativeKeyReleased(NativeKeyEvent e)
-	{}
-
-	@Override
-	public void nativeKeyPressed(NativeKeyEvent e)
 	{
 		int code = e.getKeyCode();
 		
@@ -59,7 +55,7 @@ public class KeyHandler implements NativeKeyListener
 						System.out.println("Starting cycle");
 						//Примерный центр зелёного круга (по моим замерам)
 						int x = screenSize.width/2;
-						int y = screenSize.height*47/60;
+						int y = screenSize.height;
 						
 						//Делаем скриншот
 						Rectangle area = new Rectangle(0, 0, screenSize.width, screenSize.height);
@@ -80,21 +76,32 @@ public class KeyHandler implements NativeKeyListener
 							}
 							
 						}
+						
 						//Если не нашли, перебрасываемся на начало цикла поиска
 						
 						if(!found)
 							continue;
+						
+						int dy = 0;
+						while(compare(new Color(screenshot.getRGB(x, y-dy))))
+							dy++;
+						
 						System.out.println("Coords:"+x+", "+y);
 						
 						//Ждём пока белая штука переечёт круг
 						//В этом случае цвет пикселя в (x,y) больше не проходит как зелёный в compare
-						while(compare(r.getPixelColor(x, y))){}
+						_w: while(true)
+							for(int j = 0; j<dy; j++)
+								if(!compare(r.getPixelColor(x, y)))
+									break _w;
 						
 						//Нажимаем пробел
 						r.keyPress(32);
 						r.keyRelease(32);
 						
 						System.out.println("Pressed space");
+						
+						Thread.sleep(750);
 						
 						if(i<9)
 							continue;
@@ -120,5 +127,9 @@ public class KeyHandler implements NativeKeyListener
 		
 		
 	}
+
+	@Override
+	public void nativeKeyPressed(NativeKeyEvent e)
+	{}
 
 }
