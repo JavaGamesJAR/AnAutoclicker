@@ -2,8 +2,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
+import com.github.kwhat.jnativehook.keyboard.*;
 
-public class KeyHandler implements KeyListener
+public class KeyHandler implements NativeKeyListener
 {
 	//Цвет зелёного круга
 	//private static Color trueGreen = new Color(50, 150, 90);
@@ -27,23 +28,33 @@ public class KeyHandler implements KeyListener
 	
 	//Функция при нажатии любой клавиши
 	@Override
-	public void keyPressed(KeyEvent e)
+	public void nativeKeyTyped(NativeKeyEvent e)
+	{}
+
+	@Override
+	public void nativeKeyReleased(NativeKeyEvent e)
+	{}
+
+	@Override
+	public void nativeKeyPressed(NativeKeyEvent e)
 	{
 		int code = e.getKeyCode();
 		
 		switch(code)
 		{
 			//ESC - закрытие
-			case 27: System.exit(0); break; 
+			case NativeKeyEvent.VC_ESCAPE: System.exit(0); break; 
 			//E - запуск цикла
-			case 69:
+			case NativeKeyEvent.VC_E:
 				try
 				{
 					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 					Robot r = new Robot();
 					
+					int i = 0;
+					
 					//Цикл
-					_w1: while(true)
+					while(true)
 					{
 						System.out.println("Starting cycle");
 						//Примерный центр зелёного круга (по моим замерам)
@@ -58,9 +69,9 @@ public class KeyHandler implements KeyListener
 						
 						//Нашли ли мы границу зелёного круга в радиусе 300 пикселей от центра?
 						boolean found = false;
-						for(int i = 0; i<60; i++)
+						for(int j = 0; j<60; j++)
 						{
-							y+=5;
+							y-=5;
 							if(compare(new Color(screenshot.getRGB(x, y))))
 							{
 								found = true;
@@ -70,11 +81,9 @@ public class KeyHandler implements KeyListener
 							
 						}
 						//Если не нашли, перебрасываемся на начало цикла поиска
+						
 						if(!found)
-						{
-							continue _w1;
-							
-						} 
+							continue;
 						System.out.println("Coords:"+x+", "+y);
 						
 						//Ждём пока белая штука переечёт круг
@@ -86,8 +95,18 @@ public class KeyHandler implements KeyListener
 						r.keyRelease(32);
 						
 						System.out.println("Pressed space");
+						
+						if(i<9)
+							continue;
+						else
+							i = 0;
+						
 						//Ждём 35 секунд, повторяем цикл
 						Thread.sleep(35000);
+						
+						r.keyPress(69);
+						r.keyRelease(69);
+						break;
 						
 					}
 						
@@ -99,14 +118,7 @@ public class KeyHandler implements KeyListener
 		
 		}
 		
+		
 	}
-
-	@Override
-	public void keyReleased(KeyEvent e)
-	{}
-
-	@Override
-	public void keyTyped(KeyEvent e)
-	{}
 
 }

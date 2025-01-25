@@ -1,19 +1,15 @@
 import javax.swing.JFrame;
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.keyboard.*;
 
 public class Main
 {
-	public static void main(String[] args) throws InterruptedException
+	public static void main(String[] args) throws Exception
 	{
-		JFrame frame = new JFrame();
 		KeyHandler kh = new KeyHandler();
-		frame.addKeyListener(kh);
-		frame.setTitle("Whatever");
-		frame.setAlwaysOnTop(true);
-		frame.setFocusable(true);
-		frame.setBounds(25, 25, 100, 100);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
 		
+		GlobalScreen.registerNativeHook();
+		GlobalScreen.addNativeKeyListener(kh);
 		
 	}
 
